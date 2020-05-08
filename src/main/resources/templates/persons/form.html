@@ -1,0 +1,14 @@
+<div th:fragment="form(action, form, buttonLabel, errorMessage)">
+  	<form th:action="@{${action}}" th:object="${form}" method="POST">
+    	First Name:
+    	<input type="text" th:field="*{firstName}" />    
+    	<br/>
+    	Last Name:
+    	<input type="text" th:field="*{lastName}" />     
+    	<br/>
+    	<input type="submit" th:value="${buttonLabel}" />
+    	<a href="" th:href="@{/persons/list}">Cancel</a>
+  	</form>
+	<br/>
+  	<div th:if="${errorMessage}" th:utext="${errorMessage}" class="error"></div>
+</div>

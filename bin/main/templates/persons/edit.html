@@ -1,0 +1,12 @@
+<!DOCTYPE HTML>
+<html th:replace="layout/main::layout(~{::title}, ~{::section})" xmlns:th="http://www.thymeleaf.org">
+	<head>
+    	<title th:fragment="title">Edit Person</title>
+	</head>
+   	<body>
+   		<section>
+      		<h2>Edit Person:</h2>
+      		<div th:replace="persons/form::form(@{/persons/edit/{index}(index=${index})}, ${form}, 'Edit', ${errorMessage})"></div>
+       	<section>   
+   	</body>
+</html>

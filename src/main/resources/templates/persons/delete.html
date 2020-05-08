@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html th:replace="layout/main::layout(~{::title}, ~{::section})" xmlns:th="http://www.thymeleaf.org">
+	<head>
+    	<title th:fragment="title">Delete Person</title>
+	</head>
+   	<body>
+   		<section>
+      		<h2>Delete Person</h2>
+       
+	      	Delete 
+	      	<span th:text="${person.firstName}">first name</span>
+	      	<span th:text="${person.lastName}">last name</span>?
+	          
+	      	<form th:action="@{/persons/delete/{index}(index=${index})}" th:object="${personForm}" method="POST">
+	        	<input type="hidden" name="confirm" value="1" />
+	        	<input type="submit" value="Delete" />
+	        	<a href="" th:href="@{/persons/list}">Cancel</a>
+	      	</form>
+	      	
+	      <div th:if="${errorMessage}" th:utext="${errorMessage}" class="error"></div>
+       
+   </body>
+</html>

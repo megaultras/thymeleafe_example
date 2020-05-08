@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html th:replace="layout/main::layout(~{::title}, ~{::section})" xmlns:th="http://www.thymeleaf.org">
+	<head>
+    	<title th:fragment="title">Person List</title>
+	</head>
+   	<body>
+   		<section>
+		  	<h2>Person List</h2>
+	     	<table border="1">
+	            <tr>
+	               	<th>First Name</th>
+	               	<th>Last Name</th>
+	            </tr>
+	            <tr th:each ="person,iterStat : ${persons}">
+	               	<td th:utext="${person.firstName}">...</td>
+	               	<td th:utext="${person.lastName}">...</td>
+	               	<td>
+	               		<a th:href="@{/persons/edit/{lastName}(lastName=${iterStat.index})}">Edit</a>
+	               	</td>
+	               	<td>
+	               		<a th:href="@{/persons/delete/{lastName}(lastName=${iterStat.index})}">Delete</a>
+	               	</td>
+	            </tr>
+	     	</table>
+	  	</section>
+   	</body>
+</html>
