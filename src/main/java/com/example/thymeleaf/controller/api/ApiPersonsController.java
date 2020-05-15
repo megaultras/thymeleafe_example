@@ -1,7 +1,7 @@
 package com.example.thymeleaf.controller.api;
 
 import com.example.thymeleaf.lib.Data;
-import com.example.thymeleaf.lib.Response;
+import com.example.thymeleaf.lib.ApiResponse;
 import com.example.thymeleaf.model.Person;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +22,9 @@ public class ApiPersonsController
 		method = RequestMethod.GET,
 		produces = "application/json"
 	)
-    public Response personList() 
+    public ApiResponse personList() 
     {
-    	Response response = new Response(Data.persons);
+    	ApiResponse response = new ApiResponse(Data.persons);
     	
         return response;
     }
@@ -34,15 +34,15 @@ public class ApiPersonsController
 		method = RequestMethod.GET,
 		produces = "application/json"
 	)
-    public Response personView(@PathVariable("index") int index) 
+    public ApiResponse personView(@PathVariable("index") int index) 
     {
-    	Response response;
+    	ApiResponse response;
     	
     	if (index < Data.persons.size()) {
     		Person person = Data.persons.get(index);
-    		response = new Response(person);
+    		response = new ApiResponse(person);
     	} else {
-    		response = new Response(404, "Person not found");
+    		response = new ApiResponse(404, "Person not found");
     	}
     	
         return response;

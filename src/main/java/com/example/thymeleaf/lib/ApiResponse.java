@@ -1,6 +1,6 @@
 package com.example.thymeleaf.lib;
 
-public class Response 
+public class ApiResponse 
 {
 	public int statusCode;
 	
@@ -8,14 +8,14 @@ public class Response
 	
 	public Object data;
 	
-	public Response(int statusCode, String error)
+	public ApiResponse(int statusCode, String error)
 	{
 		this.statusCode = statusCode;
 		this.data = null;
 		this.error = error;
 	}
 	
-	public Response(Object data)
+	public ApiResponse(Object data)
 	{
 		this.statusCode = 200;
 		this.data = data;
