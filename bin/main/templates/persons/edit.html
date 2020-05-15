@@ -6,7 +6,7 @@
    	<body>
    		<section>
       		<h2>Edit Person:</h2>
-      		<div th:replace="persons/form::form(@{/persons/edit/{index}(index=${index})}, ${form}, 'Edit', ${errorMessage})"></div>
+      		<div th:replace="persons/form::form(@{/persons/edit/{id}(id=${form.id})}, ${form}, 'Edit', ${errorMessage})"></div>
        	<section>   
    	</body>
 </html>

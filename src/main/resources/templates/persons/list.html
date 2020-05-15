@@ -6,22 +6,25 @@
    	<body>
    		<section>
 		  	<h2>Person List</h2>
-	     	<table border="1">
+	     	<table border="1" th:if="${list.size() > 0}">
 	            <tr>
-	               	<th>First Name</th>
-	               	<th>Last Name</th>
+	            	<th>ID</th>
+	               	<th>Name</th>
+	               	<th>Email</th>
 	            </tr>
-	            <tr th:each ="person,iterStat : ${persons}">
-	               	<td th:utext="${person.firstName}">...</td>
-	               	<td th:utext="${person.lastName}">...</td>
+	            <tr th:each ="row,iterStat : ${list}">
+	            	<td th:utext="${row.id}">...</td>
+	               	<td th:utext="${row.name}">...</td>
+	               	<td th:utext="${row.email}">...</td>
 	               	<td>
-	               		<a th:href="@{/persons/edit/{lastName}(lastName=${iterStat.index})}">Edit</a>
+	               		<a th:href="@{/persons/edit/{id}(id=${row.id})}">Edit</a>
 	               	</td>
 	               	<td>
-	               		<a th:href="@{/persons/delete/{lastName}(lastName=${iterStat.index})}">Delete</a>
+	               		<a th:href="@{/persons/delete/{id}(id=${row.id})}">Delete</a>
 	               	</td>
 	            </tr>
 	     	</table>
+	     	<div th:if="${list.size() == 0}" class="error">No results</div>
 	  	</section>
    	</body>
 </html>

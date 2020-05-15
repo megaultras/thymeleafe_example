@@ -1,10 +1,11 @@
 <div th:fragment="form(action, form, buttonLabel, errorMessage)">
   	<form th:action="@{${action}}" th:object="${form}" method="POST">
-    	First Name:
-    	<input type="text" th:field="*{firstName}" />    
+  		<input type="hidden" th:field="*{id}" />
+    	Name:
+    	<input type="text" th:field="*{name}" />
     	<br/>
-    	Last Name:
-    	<input type="text" th:field="*{lastName}" />     
+    	E-mail:
+    	<input type="text" th:field="*{email}" />     
     	<br/>
     	<input type="submit" th:value="${buttonLabel}" />
     	<a href="" th:href="@{/persons/list}">Cancel</a>

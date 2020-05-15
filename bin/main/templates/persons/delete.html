@@ -8,10 +8,9 @@
       		<h2>Delete Person</h2>
        
 	      	Delete 
-	      	<span th:text="${person.firstName}">first name</span>
-	      	<span th:text="${person.lastName}">last name</span>?
+	      	<span th:text="${person.name}">name</span>?
 	          
-	      	<form th:action="@{/persons/delete/{index}(index=${index})}" th:object="${personForm}" method="POST">
+	      	<form th:action="@{/persons/delete/{id}(id=${person.id})}" method="POST">
 	        	<input type="hidden" name="confirm" value="1" />
 	        	<input type="submit" value="Delete" />
 	        	<a href="" th:href="@{/persons/list}">Cancel</a>

@@ -1,12 +1,11 @@
 package com.example.thymeleaf.controller;
 
-import java.util.ArrayList;
-import java.util.List;
- 
 import com.example.thymeleaf.form.PersonForm;
-import com.example.thymeleaf.model.Person;
+import com.example.thymeleaf.model.Persons;
+import com.example.thymeleaf.model.PersonsRepository;
 import com.example.thymeleaf.lib.Data;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,21 +14,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
+import java.util.Optional;
  
 @Controller
 @RequestMapping("/persons")
 public class PersonsController 
 {
-    @Value("${error.message}")
-    private String errorMessage;
-    
+	@Autowired
+	private PersonsRepository personsRepository;
+	
     @RequestMapping(
 		value = { "/list" }, 
 		method = RequestMethod.GET
 	)
     public String personList(Model model) 
     {
-        model.addAttribute("persons", Data.persons);
+    	Iterable<Persons> list = personsRepository.findAll();
+        model.addAttribute("list", list);
  
         return "persons/list";
     }
@@ -41,7 +42,7 @@ public class PersonsController
 	)
     public String showAddPersonPage(Model model) 
     {
-        PersonForm form = new PersonForm();
+    	Persons form = new Persons();
         model.addAttribute("form", form);
         
         return "persons/add";
@@ -51,116 +52,119 @@ public class PersonsController
 		value = { "/add" }, 
 		method = RequestMethod.POST
 	)
-    public String savePerson(Model model, @ModelAttribute("form") PersonForm form) 
+    public String savePerson(Model model, @ModelAttribute("form") Persons form) 
     {
-        String firstName = form.getFirstName();
-        String lastName = form.getLastName();
+        String name = form.getName();
+        String email = form.getEmail();
  
-        if (firstName != null && firstName.length() > 0 //
-                && lastName != null && lastName.length() > 0) {
-            Person newPerson = new Person(firstName, lastName);
-            Data.persons.add(newPerson);
- 
+        if (name != null 
+    		&& name.length() > 0
+            && email != null 
+            && email.length() > 0
+        ) {
+        	personsRepository.save(form);
+        	
             return "redirect:/persons/list";
         }
  
-        model.addAttribute("errorMessage", errorMessage);
+        model.addAttribute("errorMessage", "Name and E-mail are required");
         
         return "persons/add";
     }
     
 //  Edit methods ============================================================================
     @RequestMapping(
-		value = "/edit/{index}", 
+		value = "/edit/{id}", 
 		method = RequestMethod.GET
 	)
-    public String showEditdPersonPage(Model model, //
-		@ModelAttribute("form") PersonForm form, //
-		@PathVariable("index") int index) 
-    {	
-    	if (index < Data.persons.size()) {
-    		Person person = Data.persons.get(index);
-    		form.setFirstName(person.getFirstName());
-    		form.setLastName(person.getLastName());
-    		
-    		model.addAttribute("index", index);
+    public String showEditdPersonPage(Model model, @PathVariable("id") int id) 
+    {
+    	Persons person = new Persons();
+    	
+    	Optional<Persons> result = personsRepository.findById(id);
+    	if (result.isPresent()) {
+    		person = result.get();
     	} else {
     		model.addAttribute("errorMessage", "Person not found");
     	}
     	
-        model.addAttribute("form", form);
+        model.addAttribute("form", person);
  
         return "persons/edit";
     }
     
     @RequestMapping(
-		value = { "/edit/{index}" }, 
+		value = { "/edit/{id}" }, 
 		method = RequestMethod.POST
 	)
     public String editPerson(Model model, //
-        @ModelAttribute("personForm") PersonForm personForm, //
-        @PathVariable("index") int index) 
+		@ModelAttribute("form") Persons form, //
+        @PathVariable("id") int id) 
     {
-        String firstName = personForm.getFirstName();
-        String lastName = personForm.getLastName();
+    	String name = form.getName();
+        String email = form.getEmail();
         
-        if (firstName == null 
-    		|| firstName.length() == 0 
-            || lastName == null 
-            || lastName.length() == 0
+        if (name != null 
+    		&& name.length() > 0
+            && email != null 
+            && email.length() > 0
         ) {
-        	model.addAttribute("errorMessage", errorMessage);
+        	personsRepository.save(form);
         	
-        	return "persons/edit";
+            return "redirect:/persons/list";
         }
         
-        Person person;
-        if (index < Data.persons.size()) {
-    		person = Data.persons.get(index);
-    	} else {
+        Optional<Persons> result = personsRepository.findById(id);
+        if (!result.isPresent()) {
     		model.addAttribute("errorMessage", "Person not found");
     		
     		return "persons/edit";
     	}
         
-        person.setFirstName(firstName);
-        person.setLastName(lastName);
-        
-        Data.persons.set(index, person);
+        personsRepository.save(form);
         
         return "redirect:/persons/list";
     }
     
 //  Delete methods =================================================================================
     @RequestMapping(
-		value = "/delete/{index}", 
+		value = "/delete/{id}", 
 		method = RequestMethod.GET
 	)
     public String showDeletedPersonPage(Model model, //
-		@PathVariable("index") int index) 
+		@PathVariable("id") int id) 
     {	
-    	if (index < Data.persons.size()) {
-    		Person person = Data.persons.get(index);
-    		model.addAttribute("person", person);
-    		model.addAttribute("index", index);
+    	Persons person = new Persons();
+    	
+    	Optional<Persons> result = personsRepository.findById(id);
+    	if (result.isPresent()) {
+    		person = result.get();
     	} else {
     		model.addAttribute("errorMessage", "Person not found");
     	}
+    	
+    	model.addAttribute("person", person);
     	
         return "persons/delete";
     }
     
     @RequestMapping(
-		value = { "/delete/{index}" }, 
+		value = { "/delete/{id}" }, 
 		method = RequestMethod.POST
 	)
     public String deletePerson(Model model, //
-        @PathVariable("index") int index, //
+        @PathVariable("id") int id, //
         @RequestParam("confirm") int confirm) 
     {	
     	if (confirm == 1) {
-    		Data.persons.remove(index);
-        	
+    		Optional<Persons> result = personsRepository.findById(id);
+        	if (result.isPresent()) {
+        		Persons person = result.get();
+        		personsRepository.delete(person);
+        	} else {
+        		return "redirect:/persons/delete" + id;
+        	}
+    		
         	return "redirect:/persons/list";
         }
     	
